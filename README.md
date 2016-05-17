@@ -14,7 +14,7 @@ An easy-to-use UITableViewCell subclass that implements a swipeable content view
 
 In your Podfile:
 ```
-  pod 'KHSwipeCell', '~> 0.2.0'
+  pod 'KHSwipeCell', '~> 0.3.1'
 ```
 Or just clone this repo and manually add source to project
 
