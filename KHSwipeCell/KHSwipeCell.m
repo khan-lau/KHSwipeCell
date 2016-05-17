@@ -49,7 +49,7 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
 // Holds the starting x position for the right buttons
 @property (nonatomic, strong) NSMutableArray *rightButtonsStartingX;
 // Determines if the layout has already been applied on this cell
-@property (nonatomic) BOOL isLayoutApplied;
+//@property (nonatomic) BOOL isLayoutApplied;
 // The starting point for the swipe
 @property (nonatomic) CGPoint startingPoint;
 // Currently swiping to the left
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
         for (UIButton *button in _leftButtons) {
             [button removeFromSuperview];
         }
-        self.isLayoutApplied = NO;
+//        self.isLayoutApplied = NO;
     }
     _leftButtons = leftButtons;
     
@@ -131,7 +131,7 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
         for (UIButton *button in _rightButtons) {
             [button removeFromSuperview];
         }
-        self.isLayoutApplied = NO;
+//        self.isLayoutApplied = NO;
     }
     _rightButtons = rightButtons;
     
@@ -154,8 +154,10 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+//    DLog(@"%@", NSStringFromCGRect( self.contentView.frame) );
+
+//    if (!self.isLayoutApplied) {
     
-    if (!self.isLayoutApplied) {
         self.topContentView.frame = self.contentView.frame;
         // Layout left buttons
         for (int i = 0; i < self.leftButtons.count; i++) {
@@ -202,8 +204,8 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
             [self.rightButtonsStartingX addObject:[NSNumber numberWithFloat:rButton.frame.origin.x]];
         }
         
-        self.isLayoutApplied = YES;
-    }
+//        self.isLayoutApplied = YES;
+//    }
 }
 
 - (void)addActionButtons:(NSArray *)actionButtons withButtonPosition:(KHButtonLocation)buttonPosition
@@ -543,6 +545,27 @@ typedef NS_ENUM(NSUInteger, KHSwipeDirection) {
     [self resetContainerView];
     
 }
+
+
+/**如果非左右按钮状态, 触摸手势控制权交给上一层*/
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        
+        if ([touch.view isEqual:self.topContentView] && self.topContentView.frame.origin.x == 0) {
+            return NO;
+        } else {
+            return YES;
+        }
+        
+    } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] ){
+        
+        return YES;
+    } else {
+        return YES;
+    }
+}
+
+
 
 /**
  Helper method that handles pinning the left/right most button to the top view and also the panning of all the buttons.
